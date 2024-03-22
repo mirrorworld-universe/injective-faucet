@@ -1,0 +1,75 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4388548 */
+  src: url('iconfont.woff2?t=1706513964338') format('woff2'),
+       url('iconfont.woff?t=1706513964338') format('woff'),
+       url('iconfont.ttf?t=1706513964338') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-wenhao:before {
+  content: "\e6c9";
+}
+
+.icon-xiajiantou2:before {
+  content: "\e6b3";
+}
+
+.icon-jiajianzujianjiahao:before {
+  content: "\e64d";
+}
+
+.icon-licai:before {
+  content: "\e600";
+}
+
+.icon-gantanhao-yuankuang:before {
+  content: "\e8ec";
+}
+
+.icon-wancheng1:before {
+  content: "\e606";
+}
+
+.icon-guanbi:before {
+  content: "\eaf2";
+}
+
+.icon-04zhuanhuan:before {
+  content: "\e625";
+}
+
+.icon-xiajiantou:before {
+  content: "\e640";
+}
+
+.icon-xiajiantou1:before {
+  content: "\e60a";
+}
+
+.icon-telegram:before {
+  content: "\eaf9";
+}
+
+.icon-tuite:before {
+  content: "\e652";
+}
+
+.icon-longhubang-diyi:before {
+  content: "\e60d";
+}
+
+.icon-ic_pc_ranking_No2:before {
+  content: "\e62b";
+}
+
+.icon-jinpai3:before {
+  content: "\e62e";
+}
+
