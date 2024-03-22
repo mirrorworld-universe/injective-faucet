@@ -1,4 +1,4 @@
-# hypergrid-explorer-frontend
+# hypergrid-faucet-frontend
 
 ## Install Dependencies
 
