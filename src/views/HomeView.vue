@@ -3,7 +3,7 @@
     <div class="box">
       <div class="title">
         <div>Request Airdrop</div>
-        <div>Maximum of 4 requests per hour</div>
+        <!-- <div>Maximum of 4 requests per hour</div> -->
       </div>
 
       <div class="title2">
