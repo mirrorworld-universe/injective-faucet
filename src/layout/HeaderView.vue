@@ -6,26 +6,7 @@
   </header>
 </template>
 
-<script lang="ts" setup>
-import { ref, onBeforeUnmount, onMounted, getCurrentInstance, computed, watch } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useStore } from 'vuex';
-import { MenuFoldOutlined } from '@ant-design/icons-vue';
-import utils from '@/utils/index';
-import { message } from 'ant-design-vue';
-import { chooseWallet, getCurrentWallet } from '@/awallet';
-
-const { proxy } = getCurrentInstance() as any;
-const store = useStore();
-const router = useRouter();
-const route = useRoute();
-
-const walletAddress = computed(() => store.state.walletAddress);
-const walletNetwork = computed(() => store.state.walletNetwork);
-const showWalletModal = computed(() => store.state.showWalletModal);
-
-onMounted(() => {});
-</script>
+<script lang="ts" setup></script>
 
 <style lang="scss" scoped>
 header {

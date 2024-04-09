@@ -30,9 +30,7 @@ export default createStore({
       key: window.location.host,
       storage: window.localStorage,
       reducer(val: any) {
-        return {
-          walletType: val.walletType
-        };
+        return {};
       }
     })
   ]

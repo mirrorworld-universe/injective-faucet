@@ -3,7 +3,6 @@
     <div class="box">
       <div class="title">
         <div>Request Airdrop</div>
-        <!-- <div>Maximum of 4 requests per hour</div> -->
       </div>
 
       <div class="title2">
@@ -14,7 +13,7 @@
       </div>
       <div class="text">
         <span>Amount: </span>
-        <a-button ghost type="primary"> 0.1 </a-button>
+        <a-button ghost type="primary"> {{ amount }} </a-button>
       </div>
       <div class="confirm">
         <a-button type="primary" size="large" block :loading="loading" @click="handleClaim">Confirm Airdrop</a-button>
@@ -26,7 +25,6 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, computed, ref, h } from 'vue';
 import { message, notification } from 'ant-design-vue';
-import { util } from '@/awallet';
 import { CheckCircleOutlined } from '@ant-design/icons-vue';
 import apis from '@/apis';
 import utils from '@/utils';
@@ -35,6 +33,7 @@ const addressVal = ref('');
 const loading = ref(false);
 
 let lastClaimTime = ref(0);
+const amount = ref('10');
 
 onMounted(() => {
   lastClaimTime.value = Number(localStorage.getItem('lastClaimTime')) || 0;
@@ -53,7 +52,7 @@ const handleClaim = () => {
     loading.value = true;
 
     apis
-      .getAirdrop(addressVal.value, '0.1')
+      .getAirdrop(addressVal.value, amount.value)
       .then((res: any) => {
         console.log('getAirdrop', res);
         loading.value = false;
