@@ -3,7 +3,7 @@
     :theme="{
       algorithm: theme.darkAlgorithm,
       token: {
-        colorPrimary: '#00b96b'
+        colorPrimary: '#2547FF'
       }
     }">
     <a-app>
@@ -17,15 +17,7 @@
 
 <script setup lang="ts">
 import HeaderView from '@/layout/HeaderView.vue';
-import { onMounted, onBeforeUnmount, computed, ref } from 'vue';
-import { useStore } from 'vuex';
 import { theme } from 'ant-design-vue';
-import WOW from 'wow.js';
-import utils from '@/utils';
-
-const store = useStore();
-
-onMounted(() => {});
 </script>
 
 <style lang="scss">

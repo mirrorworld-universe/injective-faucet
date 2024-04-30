@@ -26,11 +26,19 @@
   font-family: 'Inter';
   src: url('@/assets/fonts/Inter-Regular.woff2');
 }
+@font-face {
+  font-family: 'Orbitron';
+  src: url('@/assets/fonts/Orbitron.otf');
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('@/assets/fonts/Manrope.otf');
+}
 
 html,
 body {
   color: #ffffff;
-  background: #161b19;
+  background: #03081c;
   text-rendering: optimizeLegibility;
   transition: color 0.5s, background-color 0.5s;
   -webkit-text-size-adjust: none;
@@ -86,12 +94,13 @@ button {
   .ant-message-notice-content {
     .ant-message-custom-content {
       display: flex;
-      font-family: Poppins;
-      .anticon {
-        // color: #fff;
-      }
+      font-family: Orbitron;
     }
   }
+}
+.ant-input,
+.ant-btn {
+  font-family: Orbitron !important;
 }
 
 @media screen and (max-width: 750px) {

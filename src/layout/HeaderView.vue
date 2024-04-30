@@ -1,7 +1,7 @@
 <template>
   <header>
     <nav>
-      <img src="@/assets/images/sonic-logo.png" alt="" class="logo" />
+      <img src="@/assets/images/logo2.png" alt="" class="logo" />
     </nav>
   </header>
 </template>
@@ -14,8 +14,8 @@ header {
   height: 75px;
   position: fixed;
   z-index: 99;
-  border-bottom: 1px solid #111;
-  background: #1e2423;
+  border-bottom: 1px solid #282d2b;
+  background: #03081c;
 }
 
 nav {

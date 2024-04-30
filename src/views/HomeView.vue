@@ -99,7 +99,6 @@ const handleClaim = () => {
     width: 500px;
     height: auto;
     margin: 0 auto;
-    background-color: #1e2423;
     border: 1px solid #282d2b;
     border-radius: 10px;
     padding: 20px;
@@ -111,21 +110,21 @@ const handleClaim = () => {
       }
     }
     .title {
-      font-family: Inter;
+      font-family: Orbitron;
       font-size: 20px;
       div:nth-child(2) {
         font-size: 12px;
       }
     }
     .title2 {
-      font-family: Inter;
+      font-family: Orbitron;
       font-size: 12px;
       position: absolute;
       right: 20px;
       top: 20px;
     }
     .text {
-      font-family: Inter;
+      font-family: Orbitron;
       font-weight: 200;
       font-size: 16px;
       display: flex;
