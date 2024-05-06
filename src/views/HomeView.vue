@@ -6,7 +6,7 @@
       </div>
 
       <div class="title2">
-        <a-button type="primary"><CheckCircleOutlined />https://rpc.hypergrid.dev</a-button>
+        <a-button type="primary"><CheckCircleOutlined />https://rpc.sonic.game</a-button>
       </div>
       <div class="inputbox">
         <a-input v-model:value="addressVal" placeholder="Wallet Address" size="large" />
@@ -64,9 +64,9 @@ const handleClaim = () => {
             message: 'Airdrop was successful!',
             description: () => {
               return h('a', {
-                href: 'https://explorer.hypergrid.dev/tx/' + tx,
+                href: 'https://explorer.sonic.game/tx/' + tx,
                 target: '_blank',
-                innerHTML: 'https://explorer.hypergrid.dev/tx/' + utils.formatAddr(tx)
+                innerHTML: 'https://explorer.sonic.game/tx/' + utils.formatAddr(tx)
               });
             },
             duration: null
