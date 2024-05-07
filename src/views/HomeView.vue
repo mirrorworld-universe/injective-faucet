@@ -6,7 +6,9 @@
       </div>
 
       <div class="title2">
-        <a-button type="primary"><CheckCircleOutlined />https://rpc.sonic.game</a-button>
+        <a-button type="primary" @click="utils.handleCopy(rpcLink)">
+          {{ rpcLink }}
+        </a-button>
       </div>
       <div class="inputbox">
         <a-input v-model:value="addressVal" placeholder="Wallet Address" size="large" />
@@ -29,6 +31,7 @@ import { CheckCircleOutlined } from '@ant-design/icons-vue';
 import apis from '@/apis';
 import utils from '@/utils';
 
+const rpcLink = ref('https://devnet.sonic.game');
 const addressVal = ref('');
 const loading = ref(false);
 
