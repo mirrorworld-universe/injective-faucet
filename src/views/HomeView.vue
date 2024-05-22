@@ -6,8 +6,8 @@
       </div>
 
       <div class="title2">
-        <a-button type="primary" @click="utils.handleCopy(rpcLink)">
-          {{ rpcLink }}
+        <a-button type="primary" @click="utils.handleCopy(rpc)">
+          {{ rpc }}
         </a-button>
       </div>
       <div class="inputbox">
@@ -15,7 +15,7 @@
       </div>
       <div class="text">
         <span>Amount: </span>
-        <a-button ghost type="primary"> {{ amount }} </a-button>
+        <div class="tag">{{ amount }}</div>
       </div>
       <div class="confirm">
         <a-button type="primary" size="large" block :loading="loading" @click="handleClaim">Confirm Airdrop</a-button>
@@ -31,7 +31,8 @@ import { CheckCircleOutlined } from '@ant-design/icons-vue';
 import apis from '@/apis';
 import utils from '@/utils';
 
-const rpcLink = ref('https://devnet.sonic.game');
+const rpc = 'https://devnet.sonic.game';
+const explorer = 'https://explorer.sonic.game/tx/';
 const addressVal = ref('');
 const loading = ref(false);
 
@@ -45,7 +46,6 @@ onMounted(() => {
 const handleClaim = () => {
   if (loading.value) return;
   if (!addressVal.value) return;
-  console.log('addressVal', addressVal.value);
 
   const currentTime = Date.now();
   const timeDiff = currentTime - lastClaimTime.value;
@@ -57,25 +57,24 @@ const handleClaim = () => {
     apis
       .getAirdrop(addressVal.value, amount.value)
       .then((res: any) => {
-        console.log('getAirdrop', res);
         loading.value = false;
         if (res.data.data) {
           localStorage.setItem('lastClaimTime', lastClaimTime.value.toString());
           const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
-          console.log('tx', tx);
+          // console.log('tx', tx);
           notification.success({
             message: 'Airdrop was successful!',
             description: () => {
               return h('a', {
-                href: 'https://explorer.sonic.game/tx/' + tx,
+                href: explorer + tx,
                 target: '_blank',
-                innerHTML: 'https://explorer.sonic.game/tx/' + utils.formatAddr(tx)
+                innerHTML: explorer + utils.formatAddr(tx)
               });
             },
             duration: null
           });
         } else {
-          console.log('res.data.err', res.data.err);
+          // console.log('res.data.err', res.data.err);
           if (
             res.data.err == "error: Invalid value for '<RECIPIENT_ADDRESS>': No such file or directory (os error 2)\n"
           ) {
@@ -88,7 +87,7 @@ const handleClaim = () => {
       .catch((error) => {
         loading.value = false;
         console.log(error);
-        message.error('Claim failed');
+        message.error('Airdrop failed');
       });
   } else {
     message.info('Please wait five minutes to receive it again!');
@@ -127,19 +126,29 @@ const handleClaim = () => {
       top: 20px;
     }
     .text {
-      font-family: Orbitron;
-      font-weight: 200;
-      font-size: 16px;
       display: flex;
       align-items: center;
+      .tag {
+        width: 50px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 5px;
+        text-align: center;
+        font-family: Manrope;
+        font-weight: 700;
+        font-size: 18px;
+        color: #fff;
+        border: 1px solid #0000ff;
+        box-shadow: 0 0 3px 3px rgba(0, 0, 255, 0.3);
+      }
       span {
+        font-family: Orbitron;
+        font-weight: 200;
+        font-size: 16px;
         margin-right: 20px;
       }
     }
   }
-}
-.ant-btn-default {
-  color: #fff;
 }
 
 @media screen and (max-width: 750px) {
