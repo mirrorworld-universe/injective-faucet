@@ -101,7 +101,7 @@ const handleClaim = () => {
     width: 500px;
     height: auto;
     margin: 0 auto;
-    border: 1px solid #282d2b;
+    border: 1px solid #ffffff1a;
     border-radius: 10px;
     padding: 20px;
     position: relative;

@@ -14,7 +14,7 @@ header {
   height: 65px;
   position: fixed;
   z-index: 99;
-  border-bottom: 1px solid #282d2b;
+  border-bottom: 1px solid #ffffff1a;
 }
 
 nav {
