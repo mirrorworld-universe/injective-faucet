@@ -37,7 +37,7 @@ const addressVal = ref('');
 const loading = ref(false);
 
 let lastClaimTime = ref(0);
-const amount = ref('10');
+const amount = ref('1');
 
 onMounted(() => {
   lastClaimTime.value = Number(localStorage.getItem('lastClaimTime')) || 0;
