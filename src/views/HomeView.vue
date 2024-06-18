@@ -50,7 +50,7 @@ const handleClaim = () => {
   const currentTime = Date.now();
   const timeDiff = currentTime - lastClaimTime.value;
 
-  if (timeDiff >= 5 * 60 * 1000) {
+  if (timeDiff >= 86400000) {
     lastClaimTime.value = currentTime;
     loading.value = true;
 
@@ -90,7 +90,7 @@ const handleClaim = () => {
         message.error('Airdrop failed');
       });
   } else {
-    message.info('Please wait five minutes to receive it again!');
+    message.info('Please allow 24 hours to receive it again!');
   }
 };
 </script>
