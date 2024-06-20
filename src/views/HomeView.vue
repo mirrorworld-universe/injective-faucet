@@ -17,6 +17,7 @@
         <span>Amount: </span>
         <div class="tag">{{ amount }}</div>
       </div>
+      <vue-turnstile site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
       <div class="confirm">
         <a-button type="primary" size="large" block :loading="loading" @click="handleClaim">Confirm Airdrop</a-button>
       </div>
@@ -30,38 +31,36 @@ import { message, notification } from 'ant-design-vue';
 import { CheckCircleOutlined } from '@ant-design/icons-vue';
 import apis from '@/apis';
 import utils from '@/utils';
+import VueTurnstile from 'vue-turnstile';
 
 const rpc = 'https://devnet.sonic.game';
 const explorer = 'https://explorer.sonic.game/tx/';
+const amount = '1';
 const addressVal = ref('');
+const token = ref('');
 const loading = ref(false);
-
-let lastClaimTime = ref(0);
-const amount = ref('1');
-
-onMounted(() => {
-  lastClaimTime.value = Number(localStorage.getItem('lastClaimTime')) || 0;
-});
 
 const handleClaim = () => {
   if (loading.value) return;
   if (!addressVal.value) return;
 
   const currentTime = Date.now();
-  const timeDiff = currentTime - lastClaimTime.value;
+  const lastClaimTime = Number(localStorage.getItem('lastClaimTime')) || 0;
+  const timeDiff = currentTime - lastClaimTime;
 
   if (timeDiff >= 86400000) {
-    lastClaimTime.value = currentTime;
     loading.value = true;
-
     apis
-      .getAirdrop(addressVal.value, amount.value)
+      .getAirdrop(addressVal.value, amount, token.value)
       .then((res: any) => {
+        console.log('getAirdrop', res.data);
         loading.value = false;
+
         if (res.data.data) {
-          localStorage.setItem('lastClaimTime', lastClaimTime.value.toString());
+          if (res.data.data.error) return message.error(res.data.data.error);
+          localStorage.setItem('lastClaimTime', currentTime.toString());
           const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
-          // console.log('tx', tx);
+          console.log('tx', tx);
           notification.success({
             message: 'Airdrop was successful!',
             description: () => {
@@ -74,7 +73,6 @@ const handleClaim = () => {
             duration: null
           });
         } else {
-          // console.log('res.data.err', res.data.err);
           if (
             res.data.err == "error: Invalid value for '<RECIPIENT_ADDRESS>': No such file or directory (os error 2)\n"
           ) {
