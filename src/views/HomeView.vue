@@ -1,5 +1,9 @@
 <template>
   <section class="home">
+    <div class="important">
+      Important Update: Sonic Testnet will upgrade on June 24, 2024, at 5 AM UTC, for 6+ hours. Some tasks and on-chain
+      interactions will be paused. Thank you for understanding.
+    </div>
     <div class="box">
       <div class="title">
         <div>Request Airdrop</div>
@@ -19,7 +23,9 @@
       </div>
       <vue-turnstile site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
       <div class="confirm">
-        <a-button type="primary" size="large" block :loading="loading" @click="handleClaim">Confirm Airdrop</a-button>
+        <a-button type="primary" size="large" block :loading="loading" disabled @click="handleClaim">
+          Confirm Airdrop
+        </a-button>
       </div>
     </div>
   </section>
@@ -41,6 +47,7 @@ const token = ref('');
 const loading = ref(false);
 
 const handleClaim = () => {
+  return;
   if (loading.value) return;
   if (!addressVal.value) return;
 
@@ -99,6 +106,14 @@ const handleClaim = () => {
 
 <style lang="scss" scoped>
 .home {
+  .important {
+    width: 800px;
+    margin: 0 auto 20px;
+    font-family: Orbitron;
+    font-size: 20px;
+    color: #fff;
+    text-align: center;
+  }
   .box {
     width: 500px;
     height: auto;
