@@ -52,7 +52,7 @@ const handleClaim = () => {
   const lastClaimTime = Number(localStorage.getItem('lastClaimTime')) || 0;
   const timeDiff = currentTime - lastClaimTime;
 
-  if (timeDiff >= 86400000) {
+  if (timeDiff >= 1000) {
     loading.value = true;
     apis
       .getAirdrop(addressVal.value, amount, token.value)
