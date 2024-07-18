@@ -70,19 +70,21 @@ const networkList = ref([
 
 watchEffect(() => {
   if (route.query.network) {
-    networkVal.value = route.query.network;
+    const network = networkList.value.find((item: any) => item.value === route.query.network);
+    if (network) {
+      networkVal.value = route.query.network;
+      if (turnstile.value) turnstile.value.reset();
+    }
   }
 });
 
 const handleChange = (value: string) => {
-  networkVal.value = value;
+  if (loading.value) return;
   router.push({ query: { network: value } });
-  turnstile.value.reset();
 };
 
 const handleClaim = async () => {
-  if (loading.value) return;
-  if (!addressVal.value) return;
+  if (loading.value || !addressVal.value || !token.value) return;
 
   const currentTime = Date.now();
   const lastClaimTime = Number(localStorage.getItem('lastClaimTime')) || 0;
@@ -92,7 +94,6 @@ const handleClaim = async () => {
     loading.value = true;
 
     const network = networkList.value.find((item: any) => item.value === networkVal.value);
-    console.log('network', network);
 
     const url = `${network?.rpc}/airdrop/${addressVal.value}/${amount}/${token.value}`;
     apis
