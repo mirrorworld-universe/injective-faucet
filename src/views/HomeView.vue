@@ -52,7 +52,7 @@ const token = ref('');
 const loading = ref(false);
 const turnstile: any = ref(null);
 
-const networkVal: any = ref('testnet');
+const networkVal: any = ref('devnet');
 const networkList = ref([
   {
     value: 'devnet',
