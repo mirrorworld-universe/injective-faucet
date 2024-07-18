@@ -26,7 +26,7 @@
         <div class="tag">{{ amount }}</div>
       </div>
 
-      <vue-turnstile site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
+      <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
 
       <div class="confirm">
         <a-button type="primary" size="large" block :loading="loading" @click="handleClaim"> Confirm Airdrop </a-button>
@@ -50,6 +50,7 @@ const amount = '1';
 const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
+const turnstile: any = ref(null);
 
 const networkVal: any = ref('testnet');
 const networkList = ref([
@@ -76,6 +77,7 @@ watchEffect(() => {
 const handleChange = (value: string) => {
   networkVal.value = value;
   router.push({ query: { network: value } });
+  turnstile.value.reset();
 };
 
 const handleClaim = async () => {
