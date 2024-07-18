@@ -89,8 +89,11 @@ button {
     border-color: #0000ff;
   }
 }
+
+.ant-select-selection-item,
+.ant-select-item-option-content,
 .ant-btn {
-  font-family: Orbitron;
+  font-family: Orbitron !important;
 }
 
 .ant-notification-notice .ant-notification-notice-with-icon {
