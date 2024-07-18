@@ -25,7 +25,9 @@
         <span>Amount: </span>
         <div class="tag">{{ amount }}</div>
       </div>
+
       <vue-turnstile site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
+
       <div class="confirm">
         <a-button type="primary" size="large" block :loading="loading" @click="handleClaim"> Confirm Airdrop </a-button>
       </div>
@@ -49,7 +51,7 @@ const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
 
-const networkVal: any = ref('devnet');
+const networkVal: any = ref('testnet');
 const networkList = ref([
   {
     value: 'devnet',
