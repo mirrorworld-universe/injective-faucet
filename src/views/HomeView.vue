@@ -10,9 +10,13 @@
       </div>
 
       <div class="title2">
-        <a-button type="primary" @click="utils.handleCopy(rpc)">
-          {{ rpc }}
-        </a-button>
+        <a-select
+          ref="select"
+          class="select-option"
+          style="width: 220px"
+          v-model:value="networkVal"
+          :options="networkList"
+          @change="handleChange"></a-select>
       </div>
       <div class="inputbox">
         <a-input v-model:value="addressVal" placeholder="Wallet Address" size="large" />
@@ -21,7 +25,9 @@
         <span>Amount: </span>
         <div class="tag">{{ amount }}</div>
       </div>
-      <vue-turnstile site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
+
+      <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
+
       <div class="confirm">
         <a-button type="primary" size="large" block :loading="loading" @click="handleClaim"> Confirm Airdrop </a-button>
       </div>
@@ -30,21 +36,51 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, computed, ref, h } from 'vue';
+import { onMounted, watchEffect, ref, h } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { message, notification } from 'ant-design-vue';
-import { CheckCircleOutlined } from '@ant-design/icons-vue';
 import apis from '@/apis';
 import utils from '@/utils';
 import VueTurnstile from 'vue-turnstile';
 
-const rpc = 'https://devnet.sonic.game';
-const explorer = 'https://explorer.sonic.game/tx/';
+const route = useRoute();
+const router = useRouter();
+
 const amount = '1';
 const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
+const turnstile: any = ref(null);
 
-const handleClaim = () => {
+const networkVal: any = ref('devnet');
+const networkList = ref([
+  {
+    value: 'devnet',
+    label: 'devnet.sonic.game',
+    rpc: 'https://faucet-api.sonic.game',
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}`
+  },
+  {
+    value: 'testnet',
+    label: 'api.testnet.sonic.game',
+    rpc: 'https://faucet-api-grid-1.sonic.game',
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=custom&customUrl=https://grid-1.hypergrid.dev`
+  }
+]);
+
+watchEffect(() => {
+  if (route.query.network) {
+    networkVal.value = route.query.network;
+  }
+});
+
+const handleChange = (value: string) => {
+  networkVal.value = value;
+  router.push({ query: { network: value } });
+  turnstile.value.reset();
+};
+
+const handleClaim = async () => {
   if (loading.value) return;
   if (!addressVal.value) return;
 
@@ -54,8 +90,13 @@ const handleClaim = () => {
 
   if (timeDiff >= 1000) {
     loading.value = true;
+
+    const network = networkList.value.find((item: any) => item.value === networkVal.value);
+    console.log('network', network);
+
+    const url = `${network?.rpc}/airdrop/${addressVal.value}/${amount}/${token.value}`;
     apis
-      .getAirdrop(addressVal.value, amount, token.value)
+      .getAirdrop(url)
       .then((res: any) => {
         console.log('getAirdrop', res.data);
         loading.value = false;
@@ -65,13 +106,14 @@ const handleClaim = () => {
           localStorage.setItem('lastClaimTime', currentTime.toString());
           const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
           console.log('tx', tx);
+
           notification.success({
             message: 'Airdrop was successful!',
             description: () => {
               return h('a', {
-                href: explorer + tx,
+                href: network?.explorer(tx),
                 target: '_blank',
-                innerHTML: explorer + utils.formatAddr(tx)
+                innerHTML: network?.explorer(utils.formatAddr(tx))
               });
             },
             duration: null
