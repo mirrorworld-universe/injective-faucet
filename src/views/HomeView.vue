@@ -46,7 +46,7 @@ import VueTurnstile from 'vue-turnstile';
 const route = useRoute();
 const router = useRouter();
 
-const amount = '1';
+const amount = '0.5';
 const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
@@ -86,61 +86,50 @@ const handleChange = (value: string) => {
 const handleClaim = async () => {
   if (loading.value || !addressVal.value || !token.value) return;
 
-  const currentTime = Date.now();
-  const lastClaimTime = Number(localStorage.getItem('lastClaimTime')) || 0;
-  const timeDiff = currentTime - lastClaimTime;
+  loading.value = true;
+  const network = networkList.value.find((item: any) => item.value === networkVal.value);
+  const url = `${network?.rpc}/airdrop/${addressVal.value}/${amount}/${token.value}`;
+  apis
+    .getAirdrop(url)
+    .then((res: any) => {
+      console.log('getAirdrop', res.data);
+      loading.value = false;
 
-  if (timeDiff >= 1000) {
-    loading.value = true;
+      if (res.data.data) {
+        if (res.data.data.error) return message.error(res.data.data.error);
+        const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
+        console.log('tx', tx);
 
-    const network = networkList.value.find((item: any) => item.value === networkVal.value);
-
-    const url = `${network?.rpc}/airdrop/${addressVal.value}/${amount}/${token.value}`;
-    apis
-      .getAirdrop(url)
-      .then((res: any) => {
-        console.log('getAirdrop', res.data);
-        loading.value = false;
-
-        if (res.data.data) {
-          if (res.data.data.error) return message.error(res.data.data.error);
-          localStorage.setItem('lastClaimTime', currentTime.toString());
-          const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
-          console.log('tx', tx);
-
-          notification.success({
-            message: 'Airdrop was successful!',
-            description: () => {
-              return h('a', {
-                href: network?.explorer(tx),
-                target: '_blank',
-                innerHTML: network?.explorer(utils.formatAddr(tx))
-              });
-            },
-            duration: null
-          });
+        notification.success({
+          message: 'Airdrop was successful!',
+          description: () => {
+            return h('a', {
+              href: network?.explorer(tx),
+              target: '_blank',
+              innerHTML: network?.explorer(utils.formatAddr(tx))
+            });
+          },
+          duration: null
+        });
+      } else {
+        if (
+          res.data.err == "error: Invalid value for '<RECIPIENT_ADDRESS>': No such file or directory (os error 2)\n"
+        ) {
+          message.error('Invalid address');
         } else {
-          if (
-            res.data.err == "error: Invalid value for '<RECIPIENT_ADDRESS>': No such file or directory (os error 2)\n"
-          ) {
-            message.error('Invalid address');
-          } else {
-            message.error(res.data.err);
-          }
+          message.error(res.data.err);
         }
-      })
-      .catch((error) => {
-        loading.value = false;
-        console.error(error);
-        if (error.status == 429) {
-          message.error('You already received the airdrop! Please try again in 24 hours.');
-        } else {
-          message.error('Airdrop failed');
-        }
-      });
-  } else {
-    message.info('You already received the airdrop! Please try again in 24 hours.');
-  }
+      }
+    })
+    .catch((error) => {
+      loading.value = false;
+      console.error(error);
+      if (error.status == 429) {
+        message.error(error.data.message);
+      } else {
+        message.error('Airdrop failed');
+      }
+    });
 };
 </script>
 
