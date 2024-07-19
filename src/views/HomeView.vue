@@ -29,7 +29,7 @@
       <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
 
       <div class="confirm">
-        <a-button type="primary" size="large" block :loading="loading" :disabled="claimed" @click="handleClaim">
+        <a-button type="primary" size="large" block :loading="loading" :disabled="disabled" @click="handleClaim">
           Confirm Airdrop
         </a-button>
       </div>
@@ -52,7 +52,7 @@ const amount = '0.5';
 const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
-const claimed = ref(false);
+const disabled = ref(false);
 const turnstile: any = ref(null);
 
 const networkVal: any = ref('devnet');
@@ -102,7 +102,7 @@ const handleClaim = async () => {
         if (res.data.data.error) return message.error(res.data.data.error);
         const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
         console.log('tx', tx);
-        claimed.value = true;
+        disabled.value = true;
 
         notification.success({
           message: 'Airdrop was successful!',
@@ -132,6 +132,7 @@ const handleClaim = async () => {
         message.error(error.data.error);
       } else if (error.status == 429) {
         message.error(error.data.message);
+        disabled.value = true;
       } else {
         message.error('Airdrop failed');
       }
