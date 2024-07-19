@@ -29,7 +29,9 @@
       <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
 
       <div class="confirm">
-        <a-button type="primary" size="large" block :loading="loading" @click="handleClaim"> Confirm Airdrop </a-button>
+        <a-button type="primary" size="large" block :loading="loading" :disabled="claimed" @click="handleClaim">
+          Confirm Airdrop
+        </a-button>
       </div>
     </div>
   </section>
@@ -50,6 +52,7 @@ const amount = '0.5';
 const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
+const claimed = ref(false);
 const turnstile: any = ref(null);
 
 const networkVal: any = ref('devnet');
@@ -64,7 +67,7 @@ const networkList = ref([
     value: 'testnet',
     label: 'api.testnet.sonic.game',
     rpc: 'https://faucet-api-grid-1.sonic.game',
-    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=custom&customUrl=https://grid-1.hypergrid.dev`
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet`
   }
 ]);
 
@@ -99,6 +102,7 @@ const handleClaim = async () => {
         if (res.data.data.error) return message.error(res.data.data.error);
         const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
         console.log('tx', tx);
+        claimed.value = true;
 
         notification.success({
           message: 'Airdrop was successful!',
@@ -124,7 +128,7 @@ const handleClaim = async () => {
     .catch((error) => {
       loading.value = false;
       console.error(error);
-      if (error.status == 429) {
+      if (error.status == 401 || error.status == 429) {
         message.error(error.data.message);
       } else {
         message.error('Airdrop failed');
