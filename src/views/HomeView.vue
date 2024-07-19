@@ -1,9 +1,5 @@
 <template>
   <section class="home">
-    <!-- <div class="important">
-      Important Update: Sonic Testnet will upgrade on June 24, 2024, at 5 AM UTC, for 6+ hours. Some tasks and on-chain
-      interactions will be paused. Thank you for understanding.
-    </div> -->
     <div class="box">
       <div class="title">
         <div>Request Airdrop</div>
@@ -24,6 +20,10 @@
       <div class="text">
         <span>Amount: </span>
         <div class="tag">{{ amount }}</div>
+      </div>
+
+      <div class="important">
+        To maintain adequate balances for all users, the Faucet distributes 0.5 Test SOL every 8 hours.
       </div>
 
       <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
@@ -144,12 +144,11 @@ const handleClaim = async () => {
 <style lang="scss" scoped>
 .home {
   .important {
-    width: 800px;
-    margin: 0 auto 20px;
+    width: 100%;
+    margin: 0 auto 10px;
     font-family: Orbitron;
-    font-size: 20px;
+    font-size: 16px;
     color: #fff;
-    text-align: center;
   }
   .box {
     width: 500px;
