@@ -76,6 +76,7 @@ watchEffect(() => {
     const network = networkList.value.find((item: any) => item.value === route.query.network);
     if (network) {
       networkVal.value = route.query.network;
+      disabled.value = false;
       if (turnstile.value) turnstile.value.reset();
     }
   }
