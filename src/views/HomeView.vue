@@ -128,7 +128,9 @@ const handleClaim = async () => {
     .catch((error) => {
       loading.value = false;
       console.error(error);
-      if (error.status == 401 || error.status == 429) {
+      if (error.status == 401) {
+        message.error(error.data.error);
+      } else if (error.status == 429) {
         message.error(error.data.message);
       } else {
         message.error('Airdrop failed');
