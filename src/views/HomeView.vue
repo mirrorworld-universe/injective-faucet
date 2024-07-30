@@ -80,6 +80,9 @@ watchEffect(() => {
       if (turnstile.value) turnstile.value.reset();
     }
   }
+  if (route.query.wallet) {
+    addressVal.value = route.query.wallet as string;
+  }
 });
 
 const handleChange = (value: string) => {
