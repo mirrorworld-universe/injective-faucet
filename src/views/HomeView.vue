@@ -56,19 +56,50 @@ const disabled = ref(false);
 const turnstile: any = ref(null);
 
 const networkVal: any = ref('devnet');
+// name：Devnet
+// url param: devnet
+// rpc api：api.devnet.sonic.game
+// faucet api: faucet-api.sonic.game
+
+// name：Testnet V0
+// url param: testnet.v0
+// rpc api：api.testnet.v0.sonic.game
+// faucet api: faucet-api-grid-1.sonic.game
+
+// name：Testnet V1
+// url param: testnet.v1
+// rpc api：api.testnet.v1.sonic.game
+// faucet api: faucet-api-grid-1-v1.sonic.game
+
 const networkList = ref([
   {
+    label: 'Devnet',
     value: 'devnet',
-    label: 'devnet.sonic.game',
-    rpc: 'https://faucet-api.sonic.game',
+    rpcApi: 'https://api.devnet.sonic.game',
+    faucetApi: 'https://faucet-api.sonic.game',
     explorer: (tx) => `https://explorer.sonic.game/tx/${tx}`
   },
   {
-    value: 'testnet',
-    label: 'api.testnet.sonic.game',
-    rpc: 'https://faucet-api-grid-1.sonic.game',
-    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet`
+    label: 'Testnet V0',
+    value: 'testnet.v0',
+    rpcApi: 'https://api.testnet.v0.sonic.game',
+    faucetApi: 'https://faucet-api-grid-1.sonic.game',
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v0`
+  },
+  {
+    label: 'Testnet V1',
+    value: 'testnet.v1',
+    rpcApi: 'https://api.testnet.v1.sonic.game',
+    faucetApi: 'https://faucet-api-grid-1-v1.sonic.game',
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v1`
   }
+
+  // {
+  //   value: 'testnet',
+  //   label: 'api.testnet.sonic.game',
+  //   rpc: 'https://faucet-api-grid-1.sonic.game',
+  //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet`
+  // }
 ]);
 
 watchEffect(() => {
@@ -95,7 +126,7 @@ const handleClaim = async () => {
 
   loading.value = true;
   const network = networkList.value.find((item: any) => item.value === networkVal.value);
-  const url = `${network?.rpc}/airdrop/${addressVal.value}/${amount}/${token.value}`;
+  const url = `${network?.faucetApi}/airdrop/${addressVal.value}/${amount}/${token.value}`;
   apis
     .getAirdrop(url)
     .then((res: any) => {
