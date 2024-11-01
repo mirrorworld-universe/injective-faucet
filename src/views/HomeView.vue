@@ -56,20 +56,6 @@ const disabled = ref(false);
 const turnstile: any = ref(null);
 
 const networkVal: any = ref('devnet');
-// name：Devnet
-// url param: devnet
-// rpc api：api.devnet.sonic.game
-// faucet api: faucet-api.sonic.game
-
-// name：Testnet V0
-// url param: testnet.v0
-// rpc api：api.testnet.v0.sonic.game
-// faucet api: faucet-api-grid-1.sonic.game
-
-// name：Testnet V1
-// url param: testnet.v1
-// rpc api：api.testnet.v1.sonic.game
-// faucet api: faucet-api-grid-1-v1.sonic.game
 
 const networkList = ref([
   {
@@ -93,13 +79,6 @@ const networkList = ref([
     faucetApi: 'https://faucet-api-grid-1-v1.sonic.game',
     explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v1`
   }
-
-  // {
-  //   value: 'testnet',
-  //   label: 'api.testnet.sonic.game',
-  //   rpc: 'https://faucet-api-grid-1.sonic.game',
-  //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet`
-  // }
 ]);
 
 watchEffect(() => {
