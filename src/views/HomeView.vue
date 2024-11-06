@@ -48,12 +48,7 @@
           size="large"
           block
           :loading="loading"
-          :disabled="
-            !addressVal ||
-            !isValidCosmosAddress(addressVal) ||
-            !token ||
-            (networkVal == 'testnet.v1' && solBalance < 0.01)
-          "
+          :disabled="!addressVal || !token || (networkVal == 'testnet.v1' && solBalance < 0.01)"
           @click="handleClaim">
           Confirm Airdrop
         </a-button>
@@ -122,7 +117,7 @@ watchEffect(() => {
 
 watch([addressVal, networkVal], async ([_addressVal, _networkVal]) => {
   if (_networkVal !== 'testnet.v1') return;
-  if (!_addressVal || !isValidCosmosAddress(_addressVal)) return (solBalance.value = 0);
+  if (!_addressVal) return (solBalance.value = 0);
   const connection = new Connection('https://solana-mainnet.g.alchemy.com/v2/6BzorHtAxXZTGVDOxuzQ9rCk_q_qpXgj');
   try {
     const publicKey = new PublicKey(_addressVal);
@@ -133,18 +128,6 @@ watch([addressVal, networkVal], async ([_addressVal, _networkVal]) => {
   }
 });
 
-function isValidSolAddress(address) {
-  // SOL地址通常是44个字符的Base58字符串
-  const solRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
-  return solRegex.test(address);
-}
-
-function isValidCosmosAddress(address) {
-  // Cosmos地址通常是Bech32格式，前缀为"cosmos"
-  const cosmosRegex = /^cosmos1[0-9a-z]{38}$/;
-  return cosmosRegex.test(address);
-}
-
 const handleChange = (value: string) => {
   if (loading.value) return;
   router.push({ query: { network: value } });
@@ -154,7 +137,6 @@ const handleClaim = async () => {
   if (
     loading.value ||
     !addressVal.value ||
-    !isValidCosmosAddress(addressVal.value) ||
     !token.value ||
     (networkVal.value == 'testnet.v1' && solBalance.value < 0.01)
   )
@@ -186,7 +168,13 @@ const handleClaim = async () => {
           duration: null
         });
       } else {
-        message.error(res.data.err);
+        if (
+          res.data.err == "error: Invalid value for '<RECIPIENT_ADDRESS>': No such file or directory (os error 2)\n"
+        ) {
+          message.error('Invalid address');
+        } else {
+          message.error(res.data.err);
+        }
       }
     })
     .catch((error) => {
