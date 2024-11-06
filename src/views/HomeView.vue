@@ -154,7 +154,7 @@ const handleClaim = async () => {
   if (
     loading.value ||
     !addressVal.value ||
-    !isValidCosmosAddress(addressVal) ||
+    !isValidCosmosAddress(addressVal.value) ||
     !token.value ||
     (networkVal.value == 'testnet.v1' && solBalance.value < 0.01)
   )
