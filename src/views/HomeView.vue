@@ -115,18 +115,30 @@ watchEffect(() => {
   }
 });
 
-watch([addressVal, networkVal], async ([_addressVal, _networkVal]) => {
-  if (_networkVal !== 'testnet.v1') return;
-  if (!_addressVal) return (solBalance.value = 0);
+watch(
+  [addressVal, networkVal],
+  ([_addressVal, _networkVal]) => {
+    getBalance();
+  },
+  { immediate: true }
+);
+
+async function getBalance() {
+  console.log('addressVal', addressVal.value);
+  console.log('networkVal', networkVal.value);
+
+  if (!addressVal.value) return (solBalance.value = 0);
+  if (networkVal.value !== 'testnet.v1') return;
   const connection = new Connection('https://solana-mainnet.g.alchemy.com/v2/6BzorHtAxXZTGVDOxuzQ9rCk_q_qpXgj');
   try {
-    const publicKey = new PublicKey(_addressVal);
+    const publicKey = new PublicKey(addressVal.value);
     const balance = await connection.getBalance(publicKey);
     solBalance.value = balance / 1e9;
+    console.log('solBalance', solBalance.value);
   } catch (error) {
     console.log('Unable to get mainnet wallet balance');
   }
-});
+}
 
 const handleChange = (value: string) => {
   if (loading.value) return;
