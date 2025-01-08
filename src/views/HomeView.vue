@@ -22,6 +22,20 @@
         <div class="tag">{{ amount }}</div>
       </div>
 
+      <template v-if="networkVal == 'testnet.v1'">
+        <div class="text">
+          <span>Mainnet SOL balance: </span>
+          <div class="balance">
+            {{ utils.formatNumber(solBalance, 2) }}
+            <template v-if="addressVal">
+              <CloseCircleFilled v-if="solBalance < 0.01" />
+              <CheckCircleFilled v-else />
+            </template>
+          </div>
+        </div>
+        <div class="important">You need at least 0.01 SOL in your wallet on Solana Mainnet to access the faucet.</div>
+      </template>
+
       <div class="important">
         To maintain adequate balances for all users, the Faucet distributes 0.5 Test SOL every 8 hours.
       </div>
@@ -29,7 +43,13 @@
       <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
 
       <div class="confirm">
-        <a-button type="primary" size="large" block :loading="loading" :disabled="disabled" @click="handleClaim">
+        <a-button
+          type="primary"
+          size="large"
+          block
+          :loading="loading"
+          :disabled="!addressVal || !token || (networkVal == 'testnet.v1' && solBalance < 0.01)"
+          @click="handleClaim">
           Confirm Airdrop
         </a-button>
       </div>
@@ -38,12 +58,14 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, watchEffect, ref, h } from 'vue';
+import { onMounted, watchEffect, ref, h, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { message, notification } from 'ant-design-vue';
+import { CheckCircleFilled, CloseCircleFilled } from '@ant-design/icons-vue';
 import apis from '@/apis';
 import utils from '@/utils';
 import VueTurnstile from 'vue-turnstile';
+import { Connection, PublicKey } from '@solana/web3.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -52,31 +74,39 @@ const amount = '0.5';
 const addressVal = ref('');
 const token = ref('');
 const loading = ref(false);
-const disabled = ref(false);
 const turnstile: any = ref(null);
+const solBalance = ref(0);
 
-const networkVal: any = ref('devnet');
 const networkList = ref([
   {
+    label: 'Devnet',
     value: 'devnet',
-    label: 'devnet.sonic.game',
-    rpc: 'https://faucet-api.sonic.game',
+    rpcApi: 'https://api.devnet.sonic.game',
+    faucetApi: 'https://faucet-api.sonic.game',
     explorer: (tx) => `https://explorer.sonic.game/tx/${tx}`
   },
   {
-    value: 'testnet',
-    label: 'api.testnet.sonic.game',
-    rpc: 'https://faucet-api-grid-1.sonic.game',
-    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet`
+    label: 'Testnet V0',
+    value: 'testnet.v0',
+    rpcApi: 'https://api.testnet.v0.sonic.game',
+    faucetApi: 'https://faucet-api-grid-1.sonic.game',
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v0`
+  },
+  {
+    label: 'Testnet V1',
+    value: 'testnet.v1',
+    rpcApi: 'https://api.testnet.v1.sonic.game',
+    faucetApi: 'https://faucet-api-grid-1-v1.sonic.game',
+    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v1`
   }
 ]);
+const networkVal: any = ref(networkList.value[0].value);
 
 watchEffect(() => {
   if (route.query.network) {
     const network = networkList.value.find((item: any) => item.value === route.query.network);
     if (network) {
       networkVal.value = route.query.network;
-      disabled.value = false;
       if (turnstile.value) turnstile.value.reset();
     }
   }
@@ -85,17 +115,48 @@ watchEffect(() => {
   }
 });
 
+watch(
+  [addressVal, networkVal],
+  ([_addressVal, _networkVal]) => {
+    getBalance();
+  },
+  { immediate: true }
+);
+
+async function getBalance() {
+  console.log('addressVal', addressVal.value);
+  console.log('networkVal', networkVal.value);
+
+  if (!addressVal.value) return (solBalance.value = 0);
+  if (networkVal.value !== 'testnet.v1') return;
+  const connection = new Connection('https://solana-mainnet.g.alchemy.com/v2/6BzorHtAxXZTGVDOxuzQ9rCk_q_qpXgj');
+  try {
+    const publicKey = new PublicKey(addressVal.value);
+    const balance = await connection.getBalance(publicKey);
+    solBalance.value = balance / 1e9;
+    console.log('solBalance', solBalance.value);
+  } catch (error) {
+    console.log('Unable to get mainnet wallet balance');
+  }
+}
+
 const handleChange = (value: string) => {
   if (loading.value) return;
   router.push({ query: { network: value } });
 };
 
 const handleClaim = async () => {
-  if (loading.value || !addressVal.value || !token.value) return;
+  if (
+    loading.value ||
+    !addressVal.value ||
+    !token.value ||
+    (networkVal.value == 'testnet.v1' && solBalance.value < 0.01)
+  )
+    return;
 
   loading.value = true;
   const network = networkList.value.find((item: any) => item.value === networkVal.value);
-  const url = `${network?.rpc}/airdrop/${addressVal.value}/${amount}/${token.value}`;
+  const url = `${network?.faucetApi}/airdrop/${addressVal.value}/${amount}/${token.value}`;
   apis
     .getAirdrop(url)
     .then((res: any) => {
@@ -106,7 +167,6 @@ const handleClaim = async () => {
         if (res.data.data.error) return message.error(res.data.data.error);
         const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
         console.log('tx', tx);
-        disabled.value = true;
 
         notification.success({
           message: 'Airdrop was successful!',
@@ -136,7 +196,6 @@ const handleClaim = async () => {
         message.error(error.data.error);
       } else if (error.status == 429) {
         message.error(error.data.message);
-        disabled.value = true;
       } else {
         message.error('Airdrop failed');
       }
@@ -197,6 +256,18 @@ const handleClaim = async () => {
         border: 1px solid #0000ff;
         box-shadow: 0 0 3px 3px rgba(0, 0, 255, 0.3);
       }
+      .balance {
+        font-family: Manrope;
+        font-weight: 700;
+        font-size: 18px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        .anticon {
+          margin-left: 20px;
+          font-size: 20px;
+        }
+      }
       span {
         font-family: Orbitron;
         font-weight: 200;
@@ -205,6 +276,13 @@ const handleClaim = async () => {
       }
     }
   }
+}
+
+.anticon.anticon-close-circle {
+  color: #de1303;
+}
+.anticon.anticon-check-circle {
+  color: #0aa937;
 }
 
 @media screen and (max-width: 750px) {
