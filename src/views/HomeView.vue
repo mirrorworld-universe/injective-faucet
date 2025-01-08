@@ -78,20 +78,20 @@ const turnstile: any = ref(null);
 const solBalance = ref(0);
 
 const networkList = ref([
-  {
-    label: 'Devnet',
-    value: 'devnet',
-    rpcApi: 'https://api.devnet.sonic.game',
-    faucetApi: 'https://faucet-api.sonic.game',
-    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}`
-  },
-  {
-    label: 'Testnet V0',
-    value: 'testnet.v0',
-    rpcApi: 'https://api.testnet.v0.sonic.game',
-    faucetApi: 'https://faucet-api-grid-1.sonic.game',
-    explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v0`
-  },
+  // {
+  //   label: 'Devnet',
+  //   value: 'devnet',
+  //   rpcApi: 'https://api.devnet.sonic.game',
+  //   faucetApi: 'https://faucet-api.sonic.game',
+  //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}`
+  // },
+  // {
+  //   label: 'Testnet V0',
+  //   value: 'testnet.v0',
+  //   rpcApi: 'https://api.testnet.v0.sonic.game',
+  //   faucetApi: 'https://faucet-api-grid-1.sonic.game',
+  //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v0`
+  // },
   {
     label: 'Testnet V1',
     value: 'testnet.v1',
