@@ -95,8 +95,8 @@ const networkList = ref([
   {
     label: 'Testnet V1',
     value: 'testnet.v1',
-    rpcApi: 'https://api.testnet.v1.sonic.game',
-    faucetApi: 'https://faucet-api-grid-1-v1.sonic.game',
+    rpcApi: 'http://svm-injective-test.sonic.game',
+    faucetApi: 'https://faucet-injective-test.sonic.game',
     explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v1`
   }
 ]);
