@@ -22,7 +22,7 @@
         <div class="tag">{{ amount }}</div>
       </div>
 
-      <template v-if="networkVal == 'testnet.v1'">
+      <!-- <template v-if="networkVal == 'testnet.v1'">
         <div class="text">
           <span>Mainnet SOL balance: </span>
           <div class="balance">
@@ -34,13 +34,13 @@
           </div>
         </div>
         <div class="important">You need at least 0.01 SOL in your wallet on Solana Mainnet to access the faucet.</div>
-      </template>
+      </template> -->
 
       <div class="important">
-        To maintain adequate balances for all users, the Faucet distributes 0.5 Test SOL every 8 hours.
+        To maintain adequate balances for all users, the Faucet distributes 4 Test SOL every 8 hours.
       </div>
 
-      <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" />
+      <!-- <vue-turnstile ref="turnstile" site-key="0x4AAAAAAAc6HG1RMG_8EHSC" v-model="token" /> -->
 
       <div class="confirm">
         <a-button
@@ -93,8 +93,8 @@ const networkList = ref([
   //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v0`
   // },
   {
-    label: 'Testnet V1',
-    value: 'testnet.v1',
+    label: 'Injective',
+    value: 'Injective',
     rpcApi: 'http://svm-injective-test.sonic.game',
     faucetApi: 'https://faucet-injective-test.sonic.game',
     explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v1`
