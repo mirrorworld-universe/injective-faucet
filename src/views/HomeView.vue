@@ -95,7 +95,7 @@ const networkList = ref([
   {
     label: 'Injective',
     value: 'Injective',
-    rpcApi: 'http://svm-injective-test.sonic.game',
+    rpcApi: 'https://svm-injective-test.sonic.game',
     faucetApi: 'https://faucet-injective-test.sonic.game',
     explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v1`
   }
