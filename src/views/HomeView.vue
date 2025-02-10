@@ -56,7 +56,7 @@ import { Connection, PublicKey } from '@solana/web3.js';
 const route = useRoute();
 const router = useRouter();
 
-const amount = '0.5';
+const amount = '4';
 const addressVal = ref('');
 const loading = ref(false);
 const turnstile: any = ref(null);
