@@ -22,20 +22,6 @@
         <div class="tag">{{ amount }}</div>
       </div>
 
-      <!-- <template v-if="networkVal == 'testnet.v1'">
-        <div class="text">
-          <span>Mainnet SOL balance: </span>
-          <div class="balance">
-            {{ utils.formatNumber(solBalance, 2) }}
-            <template v-if="addressVal">
-              <CloseCircleFilled v-if="solBalance < 0.01" />
-              <CheckCircleFilled v-else />
-            </template>
-          </div>
-        </div>
-        <div class="important">You need at least 0.01 SOL in your wallet on Solana Mainnet to access the faucet.</div>
-      </template> -->
-
       <div class="important">
         To maintain adequate balances for all users, the Faucet distributes 4 Test SOL every 8 hours.
       </div>
@@ -48,7 +34,7 @@
           size="large"
           block
           :loading="loading"
-          :disabled="!addressVal || !token || (networkVal == 'testnet.v1' && solBalance < 0.01)"
+          :disabled="!addressVal"
           @click="handleClaim">
           Confirm Airdrop
         </a-button>
@@ -72,26 +58,10 @@ const router = useRouter();
 
 const amount = '0.5';
 const addressVal = ref('');
-const token = ref('');
 const loading = ref(false);
 const turnstile: any = ref(null);
-const solBalance = ref(0);
 
 const networkList = ref([
-  // {
-  //   label: 'Devnet',
-  //   value: 'devnet',
-  //   rpcApi: 'https://api.devnet.sonic.game',
-  //   faucetApi: 'https://faucet-api.sonic.game',
-  //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}`
-  // },
-  // {
-  //   label: 'Testnet V0',
-  //   value: 'testnet.v0',
-  //   rpcApi: 'https://api.testnet.v0.sonic.game',
-  //   faucetApi: 'https://faucet-api-grid-1.sonic.game',
-  //   explorer: (tx) => `https://explorer.sonic.game/tx/${tx}?cluster=testnet.v0`
-  // },
   {
     label: 'Injective',
     value: 'Injective',
@@ -115,30 +85,6 @@ watchEffect(() => {
   }
 });
 
-watch(
-  [addressVal, networkVal],
-  ([_addressVal, _networkVal]) => {
-    getBalance();
-  },
-  { immediate: true }
-);
-
-async function getBalance() {
-  console.log('addressVal', addressVal.value);
-  console.log('networkVal', networkVal.value);
-
-  if (!addressVal.value) return (solBalance.value = 0);
-  if (networkVal.value !== 'testnet.v1') return;
-  const connection = new Connection('https://solana-mainnet.g.alchemy.com/v2/6BzorHtAxXZTGVDOxuzQ9rCk_q_qpXgj');
-  try {
-    const publicKey = new PublicKey(addressVal.value);
-    const balance = await connection.getBalance(publicKey);
-    solBalance.value = balance / 1e9;
-    console.log('solBalance', solBalance.value);
-  } catch (error) {
-    console.log('Unable to get mainnet wallet balance');
-  }
-}
 
 const handleChange = (value: string) => {
   if (loading.value) return;
@@ -146,26 +92,20 @@ const handleChange = (value: string) => {
 };
 
 const handleClaim = async () => {
-  if (
-    loading.value ||
-    !addressVal.value ||
-    !token.value ||
-    (networkVal.value == 'testnet.v1' && solBalance.value < 0.01)
-  )
-    return;
+  if (loading.value || !addressVal.value) return;
 
   loading.value = true;
   const network = networkList.value.find((item: any) => item.value === networkVal.value);
-  const url = `${network?.faucetApi}/airdrop/${addressVal.value}/${amount}/${token.value}`;
+  const url = `${network?.faucetApi}/airdrop/${addressVal.value}/${amount}/x`;
   apis
     .getAirdrop(url)
     .then((res: any) => {
       console.log('getAirdrop', res.data);
       loading.value = false;
 
-      if (res.data.data) {
-        if (res.data.data.error) return message.error(res.data.data.error);
-        const tx = res.data.data.replace(/\n/g, '').replace('Signature: ', '');
+      if (res.data) {
+        if (res.data.error) return message.error(res.data.data.error);
+        const tx = res.data.replace(/\n/g, '').replace('Signature: ', '');
         console.log('tx', tx);
 
         notification.success({
